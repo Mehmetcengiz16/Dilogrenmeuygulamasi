@@ -1,0 +1,94 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+/* Fluent AI Studio tasarım sistemi (ekrantasarimları/fluent_ai_studio/DESIGN.md) */
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --color-primary: #5341cd;
+    --color-primary-container: #6c5ce7;
+    --color-primary-fixed: #e4dfff;
+    --color-on-primary-fixed: #160066;
+    --color-secondary: #5952af;
+    --color-secondary-fixed: #e3dfff;
+    --color-tertiary: #00664f;
+    --color-tertiary-fixed: #63fbcf;
+    --color-on-tertiary-fixed: #002118;
+    --color-surface: #f4fafd;
+    --color-surface-low: #eef5f7;
+    --color-surface-container: #e8eff1;
+    --color-surface-high: #e2e9ec;
+    --color-on-surface: #161d1f;
+    --color-on-surface-variant: #474554;
+    --color-outline-variant: #c8c4d7;
+    --color-error: #ba1a1a;
+    --color-error-container: #ffdad6;
+}
+
+@utility card {
+    @apply bg-white rounded-3xl p-6 shadow-[0_8px_24px_rgba(108,92,231,0.06)];
+}
+
+@utility btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-full px-5 py-2.5 text-sm font-semibold transition active:scale-95 cursor-pointer;
+}
+
+@utility btn-primary {
+    @apply btn bg-primary-container text-white shadow-[0_8px_20px_rgba(108,92,231,0.3)] hover:bg-primary;
+}
+
+@utility btn-soft {
+    @apply btn bg-surface-low text-secondary hover:bg-secondary-fixed;
+}
+
+@utility btn-danger {
+    @apply btn bg-error-container text-error hover:bg-error hover:text-white;
+}
+
+@utility btn-sm {
+    @apply !px-3 !py-1.5 !text-xs;
+}
+
+@utility input {
+    @apply w-full rounded-2xl border border-outline-variant/60 bg-white px-4 py-2.5 text-sm outline-none transition focus:border-primary-container focus:ring-4 focus:ring-primary-fixed;
+}
+
+@utility label {
+    @apply mb-1.5 block text-xs font-semibold text-on-surface-variant;
+}
+
+@utility chip {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold;
+}
+
+@utility chip-ok {
+    @apply chip bg-tertiary-fixed text-on-tertiary-fixed;
+}
+
+@utility chip-muted {
+    @apply chip bg-surface-container text-on-surface-variant;
+}
+
+@utility chip-primary {
+    @apply chip bg-primary-fixed text-on-primary-fixed;
+}
+
+@utility data-table {
+    @apply w-full text-sm;
+    & th {
+        @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-on-surface-variant;
+    }
+    & td {
+        @apply border-t border-surface-container px-4 py-3 align-middle;
+    }
+    & tbody tr {
+        @apply hover:bg-surface/60;
+    }
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400;
+}

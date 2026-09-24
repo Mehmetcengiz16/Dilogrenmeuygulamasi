@@ -1,0 +1,12 @@
+# İşletim sistemi / editör
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Alt projelerin kendi .gitignore dosyaları vardır (backend/.gitignore, mobile/.gitignore).
+# Gizli bilgiler asla eklenmemeli:
+.env
+*.keystore
+*.jks
+key.properties
