@@ -15,6 +15,75 @@ Kısa günlük derslerle kelime, dinleme ve konuşma pratiği; AI konuşma asist
   <img src="docs/screenshots/register.png" width="200" alt="Kayıt">
 </p>
 
+## ⚠️ Yayına Almadan Önce Yapılması Gerekenler
+
+> [!IMPORTANT]
+> Uygulama şu an **geliştirme durumundadır**. Google Play / App Store'a yüklemeden önce aşağıdaki maddeler mutlaka tamamlanmalıdır.
+
+### 1. Paket isimlerini güncelle (zorunlu)
+
+Şu an geçici paket adları kullanılıyor. Mağazaya bir kez yüklendikten sonra **paket adı değiştirilemez**, bu yüzden ilk yüklemeden önce kalıcı adı belirleyin (ör. `com.sirketadi.linguaai`).
+
+| Platform | Dosya | Mevcut değer |
+| --- | --- | --- |
+| Android | `mobile/android/app/build.gradle.kts` → `namespace`, `applicationId` | `com.linguaai.lingua_ai` |
+| Android | `mobile/android/app/src/main/kotlin/...` → `MainActivity.kt` klasör yolu ve `package` satırı | `com/linguaai/lingua_ai` |
+| iOS | `mobile/ios/Runner.xcodeproj/project.pbxproj` → `PRODUCT_BUNDLE_IDENTIFIER` | `com.linguaai.linguaAi` |
+| iOS | `mobile/ios/Runner/Info.plist` → `CFBundleDisplayName` | `Lingua Ai` → `LinguaAI` |
+
+> [!TIP]
+> [`change_app_package_name`](https://pub.dev/packages/change_app_package_name) paketi Android ve iOS'u tek komutla günceller.
+
+### 2. Keystore ile imzalama (zorunlu)
+
+Release derlemesi şu an **debug anahtarıyla** imzalanıyor (`build.gradle.kts` → `signingConfig = signingConfigs.getByName("debug")`); Google Play bunu kabul etmez.
+
+1. Yükleme anahtarı oluşturun:
+   ```bash
+   keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+   ```
+2. `mobile/android/key.properties` dosyasına `storePassword`, `keyPassword`, `keyAlias`, `storeFile` yazın.
+3. `build.gradle.kts` içinde `signingConfigs { create("release") { ... } }` tanımlayıp `release` derlemesini ona bağlayın.
+
+> [!CAUTION]
+> `*.jks`, `*.keystore` ve `key.properties` dosyaları `.gitignore` içindedir; **asla GitHub'a yüklemeyin** ve güvenli bir yerde yedekleyin. Anahtar kaybolursa uygulamayı güncelleyemezsiniz.
+
+### 3. Logo ve uygulama ikonu (zorunlu)
+
+Uygulama ikonu şu an **varsayılan Flutter logosu**. Uygulama içindeki logo (`lib/core/widgets/app_logo.dart`) kodla çizilmiştir.
+
+- 1024×1024 PNG logo hazırlayıp `mobile/assets/icon/` altına koyun.
+- [`flutter_launcher_icons`](https://pub.dev/packages/flutter_launcher_icons) ile Android (adaptive icon dahil) ve iOS ikonlarını üretin.
+- Açılış ekranı (splash) için [`flutter_native_splash`](https://pub.dev/packages/flutter_native_splash) ekleyin.
+- Admin paneldeki logo (`resources/views/components/admin-layout.blade.php`) ve favicon da güncellenmelidir.
+
+### 4. AdMob reklam entegrasyonu (gelir modeli)
+
+Ücretsiz kullanıcılara reklam gösterilerek gelir elde edilebilir.
+
+- [`google_mobile_ads`](https://pub.dev/packages/google_mobile_ads) paketini ekleyin.
+- AdMob **App ID**'sini `AndroidManifest.xml` (`com.google.android.gms.ads.APPLICATION_ID`) ve `Info.plist` (`GADApplicationIdentifier`) içine yazın.
+- Önerilen yerleşim: ders sonucu ekranında **geçiş reklamı (interstitial)**, ek XP/can için **ödüllü reklam (rewarded)**, ana sayfanın altında **banner**.
+- Premium kullanıcılara reklam gösterilmemelidir (bkz. madde 5).
+- Test sırasında mutlaka **test reklam ID'leri** kullanın; kendi reklamlarınıza tıklamak hesabın kapatılmasına yol açar.
+- GDPR/KVKK için kullanıcı onayı (UMP SDK) eklenmelidir.
+
+### 5. Premium üyelik (gelir modeli)
+
+Aylık/yıllık abonelikle reklamsız ve sınırsız kullanım sunulabilir.
+
+- Mağaza içi satın alma: [`in_app_purchase`](https://pub.dev/packages/in_app_purchase) veya abonelik yönetimini kolaylaştıran [RevenueCat](https://www.revenuecat.com/) (`purchases_flutter`).
+- **Backend:** `users` tablosuna `is_premium` / `premium_until` alanları, satın alma makbuzunu sunucuda doğrulayan bir uç nokta (`POST /api/v1/subscriptions/verify`) ve mağaza bildirimleri için webhook.
+- **Admin panel:** kullanıcı detayında premium durumu, abonelik geçmişi ve gelir istatistikleri.
+- Premium'a özel özellik önerileri: reklamsız kullanım, sınırsız AI sohbet (ücretsizde günlük mesaj limiti), tüm kurslara erişim, çevrimdışı ders indirme, ayrıntılı telaffuz analizi.
+
+### Diğer yayın kontrolleri
+
+- [ ] `backend/.env` → `APP_ENV=production`, `APP_DEBUG=false`, HTTPS `APP_URL`
+- [ ] Demo hesapların (`admin@linguaai.test`, `selin@linguaai.test`) şifrelerini değiştirin veya silin
+- [ ] Mobilde `API_URL` canlı HTTPS adresine ayarlanmalı; `AndroidManifest.xml` içindeki `usesCleartextTraffic="true"` kaldırılmalı
+- [ ] Gizlilik politikası ve kullanım koşulları sayfaları (mağazalar için zorunlu, mikrofon izni gerekçesi dahil)
+
 ## Özellikler
 
 ### Mobil uygulama
